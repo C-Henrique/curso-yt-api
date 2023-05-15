@@ -1,10 +1,10 @@
-import  express  from "express";
+import express from 'express';
+const server = express();
 
+interface Teste{
 
-const server  = express();
-
-server.get('/', (req, res) =>{
-    res.send('hello')
-})
-
+}
+server.get('/', (req, res)=>{
+    res.send('Teste');
+});
 export {server};
