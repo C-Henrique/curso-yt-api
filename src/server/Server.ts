@@ -1,10 +1,5 @@
 import express from 'express';
+import {router} from './routes/index';
 const server = express();
-
-interface Teste{
-
-}
-server.get('/', (req, res)=>{
-    res.send('Teste');
-});
+server.use(router);
 export {server};
