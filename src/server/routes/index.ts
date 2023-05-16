@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {StatusCodes} from 'http-status-codes';
+//import {StatusCodes} from 'http-status-codes';
 import {CidadesController} from './../controllers/index';
 
 
