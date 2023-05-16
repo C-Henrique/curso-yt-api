@@ -1,8 +1,14 @@
-import {Router} from 'express';
-
+import { Router } from 'express';
+import {StatusCodes} from 'http-status-codes';
 const router = Router();
 
-router.get('/', (req, res)=>{
+router.get('/', (req, res) => {
     res.send('Teste');
 });
-export {router};
+
+router.post('/teste', (req, res) => {
+    console.log(req.body);
+    return res.status(StatusCodes.ACCEPTED).json(req.body);
+
+});
+export { router };
