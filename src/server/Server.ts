@@ -1,4 +1,4 @@
-import express, { json } from 'express';
+import express from 'express';
 import 'dotenv/config';
 import './shared/services/TranslationsYup';
 import {router} from './routes/index';
