@@ -8,5 +8,5 @@ router.get('/', (req, res) => {
     res.send('Teste');
 });
 
-router.post('/cidades', CidadesController.createValidation ,CidadesController.create);
+router.post('/cidades', CidadesController.createValidation, CidadesController.create);
 export { router };

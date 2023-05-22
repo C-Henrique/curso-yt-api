@@ -1,23 +1,37 @@
 import { RequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { Schema, ValidationError } from 'yup';
+import { ObjectSchema , ValidationError, Maybe, AnyObject } from 'yup';
 
-type TValidation = (shema: Schema<object>) => RequestHandler;
+type TGetSchema = <T extends Maybe<AnyObject>>(schema: ObjectSchema<T>) => ObjectSchema<T>
+type TProperty = 'body'| 'header'| 'params'|'query';
+type TallSchemas = Record<TProperty, ObjectSchema<object>>;
+type TGetAllSchemas = (getSchema: TGetSchema) => Partial<TallSchemas>;
+type TValidation = (getAllSchemas: TGetAllSchemas) => RequestHandler;
 
 
-export const validation: TValidation = (shema) =>async (req, res, next) => {
-    console.log('er');
-    try {
-        await shema.validate(req.body, {abortEarly: false});
-        return next();
-    } catch (err) {
-        const yupError = err as ValidationError;
-        const errors: Record<string, string> = { };
+export const validation: TValidation = (getAllSchemas) => async (req, res, next) => {
+    const schemas = getAllSchemas(schema => schema);
+    const errorsResults : Record<string , Record<string,string>>={};
+    Object.entries(schemas).forEach(
+        ([key, schema]) => {
 
-        yupError.inner.forEach(error => {
-            if (!error.path) return;
-            errors[error.path] = error.message;
+            try {
+                schema.validateSync(req[key as TProperty], {abortEarly: false});
+            } catch (err) {
+                const yupError = err as ValidationError;
+                const errors: Record<string, string> = { };
+                
+                yupError.inner.forEach(error => {
+                    if (!error.path) return;
+                    errors[error.path] = error.message;
+                });
+                errorsResults[key] = errors;   
+            }
+            
         });
-        return res.status(StatusCodes.BAD_REQUEST).json({errors});
+    if(Object.entries(errorsResults).length === 0){
+        return next();
+    }else{
+        return res.status(StatusCodes.BAD_REQUEST).json({errors : errorsResults});
     }
 };
