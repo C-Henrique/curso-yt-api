@@ -3,7 +3,6 @@ import { number, object, string} from 'yup';
 import { validation } from '../../shared/middleware';
 import { StatusCodes } from 'http-status-codes';
 
-
 interface IQueryProps{
     page?: number,
     limit?:number,
